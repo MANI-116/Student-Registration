@@ -26,7 +26,7 @@
          //document.getElementById('results').innerHTML = 
              //'<img src="'+data_uri+'"/>';
               fetch('http://localhost:80/imgupdate', {
-               method: "POST",
+               method: "PATCH",
                body: JSON.stringify({
                        encoded_image2:data_uri
        }),
@@ -38,7 +38,7 @@
                
                 
                console.log({"imagestatus":"got the image"})
-               window.open('http://localhost:80/studentRegistration')
+               window.open('http://localhost:80/login',"_self")
        
        
            

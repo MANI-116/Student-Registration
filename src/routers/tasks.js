@@ -1,7 +1,7 @@
 
 const express=require('express')
 const Task=require('../models/tasks')
-
+const auth=require('../middleware/auth.js')
 const router=new express.Router()
 
 //create a task
@@ -10,18 +10,34 @@ const router=new express.Router()
 
 
 
-router.post('/tasks',async (req,res)=>{
+router.post('/tasks',auth,async (req,res)=>{
     
-   
+   const user=req.user
 const task=new Task(req.body)
-console.log({Roll_No:req.body.Roll_No})
+
+console.log(req.body.Roll_No)
     try{
-       const regiseterd= await task.save()
-        res.status(202).render('index')
+        await task.save()
+       res.status(202).render('index')
     
    }catch(e){
        res.status(400).send('failed!')
    }
+//    try {
+
+//     req.user.tokens = req.user.tokens.filter((token)=>{
+//       return token.token !== req.token
+//     })
+
+//     await req.user.save()
+//     res.status(202).render('index')
+//    // res.send()
+
+// } catch (error) {
+
+//   res.status(500).send({error})
+  
+// }
 
 
 })

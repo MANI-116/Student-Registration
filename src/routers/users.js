@@ -1,7 +1,28 @@
 const express=require('express')
 const User=require('../models/users')
-
+const auth=require('../middleware/auth.js')
 const router=new express.Router()
+
+
+//logout a user
+router.post('/users/logout',auth,async (req,res) =>{
+          
+    try {
+          req.user.tokens = req.user.tokens.filter((token)=>{
+            return token.token !== req.token
+          })
+
+          await req.user.save()
+          res.send()
+
+    } catch (error) {
+
+        res.status(500).send({error})
+        
+    }
+
+
+})
 
 //create a user
 router.post('/users', async (req, res) => {
@@ -14,11 +35,20 @@ router.post('/users', async (req, res) => {
                 password:req.body.password,
                 roll:req.body.roll
             })
+
             
             await user.save()
-            //console.log("dbms not accepted")
+            //console.log("dbms accepted")
+             const ser =await User.findByCredentials(req.body.email, req.body.password)
+            //console.log(user)
+            const token=await ser.generateAuthToken()
+            //       console.log(token);
+            
+    
+            res.cookie('authorizationToken',token).render('login')
+    
           
-            res.status(202).render('login')
+           // res.status(202).render('login')
          
     } catch (e) {
         res.status(400).send(e)
@@ -27,12 +57,15 @@ router.post('/users', async (req, res) => {
 })
 //user login
 router.post('/users/login',async (req,res)=>{
-    console.log("requestcame")
+    //console.log("requestcame")
     try{
+       // console.log(req.body)
         
         const user =await User.findByCredentials(req.body.email, req.body.password)
-        
-        res.send(user)
+        //console.log(user)
+        const token=await user.generateAuthToken()//       console.log(token);
+
+        res.cookie('authorizationToken',token).send({user,token})
 
 
     }catch(e){
@@ -42,7 +75,7 @@ router.post('/users/login',async (req,res)=>{
 })
 
 //to read users
-router.get('/users', async (req, res) => {
+router.get('/users', auth,async (req, res) => {
 
     console.log(req.body)
 

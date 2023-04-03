@@ -1,5 +1,7 @@
 
-   
+let x=document.cookie
+let token=x.replace("authorizationToken=","")
+console.log(token)
    // <script language="JavaScript">
     
      // Configure a few settings and attach camera
@@ -18,7 +20,7 @@
     
     function take_snapshot() {
        // play sound effect
-       shutter.play();
+       //shutter.play();
     
        // take snapshot and get image data
        Webcam.snap(function(data_uri) {
@@ -31,7 +33,8 @@
                         encoded_image2:data_uri
         }),
         headers: {
-            "Content-Type": "application/json; charset=UTF-8"
+            "Content-Type": "application/json; charset=UTF-8",
+            "Authorization":token
         }
             }).then((response) => {
                 response.json().then((response)=> 
@@ -39,6 +42,7 @@
                     console.log(JSON.stringify(response));
                     let object=JSON.parse(JSON.stringify(response))
                     let da =object.da
+                    
                     console.log(da);
                     
                     window.open('http://localhost:80/'+da,"_self");

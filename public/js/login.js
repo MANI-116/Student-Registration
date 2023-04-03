@@ -1,3 +1,5 @@
+
+
 const loginform=document.querySelector('form')
 
 loginform.addEventListener('submit',(e) =>{
@@ -18,8 +20,10 @@ loginform.addEventListener('submit',(e) =>{
     }
 }).then((response)=>{
     response.json().then((data)=>{
-        if(!data.error)
+        if(!data.error){
+            console.log(data)
         window.open('http://localhost:80/webcam',"_self")
+    }
         else
         alert('no user found...singnup!')
     })

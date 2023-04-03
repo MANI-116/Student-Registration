@@ -155,7 +155,7 @@ const confirmPasswordEle=document.getElementById('confirmPassword-el')
                          })
 
                           alert("account is created")
-                          window.open('http://localhost:80/login')
+                          window.open('http://localhost:80/imgupdate',"_self")
 
 
                       })

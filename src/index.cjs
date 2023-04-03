@@ -3,8 +3,9 @@ const path=require('path')
 const express=require('express')
 require('./db/mongoose')
 const multer=require('multer')
+const auth=require('./middleware/auth.js')
  
-const User=require('./models/users')
+const User=require('./models/users.js')
 
 
 
@@ -15,7 +16,6 @@ const hbs=require('hbs')
 const app=express()
 
 //const port=process.env.PORT || 80
-
 
 
 
@@ -51,6 +51,10 @@ app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
 
+//adminpage
+app.get('/admin',(req,res)=>{
+    res.render('admin')
+})
 //index page
 app.get('',(req,res)=>{
     res.render('index')
@@ -62,7 +66,7 @@ app.get('/flogin',(req,res)=>{
 })
 
 //student registration page
-app.get('/studentRegistration',(req,res)=>{
+app.get('/studentRegistration',auth,(req,res)=>{
     res.render('studentRegistration')
 })
 
@@ -138,7 +142,11 @@ var transporter = nm.createTransport(
         secure: false,
         auth: {
             user: '111manikanta.v@gmail.com',
-            pass: 'zbsvdfjiobwrvabh'
+            pass: 'fnentvzxqpjghulv'
+        },
+        tls: {
+            rejectUnauthorized: false,
+            
         }
     }
 );
@@ -206,20 +214,26 @@ const upload = multer({
 })
 
 
+app.get('/imgupdate',(req,res) =>{
+    res.render('imgupdate')
+})
 
-app.get('/webcam',(req,res) =>{
+app.get('/webcam',auth,(req,res) =>{
     res.render('webcam.hbs')
 })
 
 //........image update.............//
-app.post('/imgupdate',async (req,res)=>{
+app.patch('/imgupdate',auth,async (req,res)=>{
 
     try{
         //.replace('data:image/jpeg;base64,','')
         let bufferImage=req.body.encoded_image2
-            console.log(bufferImage)
-         const user = await User.findOne({email:"194101@nith.ac.in"})
+           console.log(bufferImage)
+         const user = req.user
+         //console.log(user)
+        // console.log(req.body.encoded_image2)
             user.image=bufferImage
+           // console.log(user.image)
             await user.save()
     
     
@@ -233,11 +247,12 @@ app.post('/imgupdate',async (req,res)=>{
 
 })
 /////...............imgverify..........//////
-app.post('/imgverify',async (req,res)=>{
+app.post('/imgverify',auth,async (req,res)=>{
 
-    const user= await User.findOne({email:"194111@nith.ac.in"})
+    const user= req.user
     
 let encoded_imageOne= Buffer.from(user.image,'base64').toString().replace('data:image/jpeg;base64,','')
+//console.log(encoded_imageOne)
 
 let encoded_imageTwo=req.body.encoded_image2.replace('data:image/jpeg;base64,','').toString()
 
@@ -250,13 +265,16 @@ const response = await fetch('https://faceapi.mxface.ai/api/v2/face/verify', {
         "encoded_image2":encoded_imageTwo
     }),
 	headers: {'Content-Type': 'application/json',
-              'Subscriptionkey':'0nSvJZz1ywynMtq3v3-Jnqlj6OXo11259'
+              'Subscriptionkey':'gXzFDT4ehpDN0prRwk-eLNdNhp5yL1390'
               }
 });
 const data=await response.json()
 //let confidence=data[0].confidence
+console.log(encoded_imageOne)
+console.log("////////////////////////////////////////")
+console.log(encoded_imageTwo)
 console.log(data)
-console.log(data.code)
+//console.log(data.code)
 if(data.code===400){
     res.send({"da":"login"})
 }
