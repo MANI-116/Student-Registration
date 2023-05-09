@@ -52,23 +52,24 @@ router.get('/tasks',async (req,res)=>{
     
 
     try{
+        console.log("tasks are getting loaded")
         console.log(req.query)
         const tasks=await Task.find(req.query)
         const result=[{Roll_No:String,First_Name:String,Last_Name:String}]
 
         console.log(tasks)
 
-        for(let i=0;i<5;i++){
-            const object={Roll_No:String,First_Name:String,Last_Name:String}
-           result[i].Roll_No=tasks[i].Roll_No
-           result[i].First_Name=tasks[i].First_Name
-           result[i].Last_Name=tasks[i].Last_Name
+        // for(let i=0;i<5;i++){
+        //     const object={Roll_No:String,First_Name:String,Last_Name:String}
+        //    result[i].Roll_No=tasks[i].Roll_No
+        //    result[i].First_Name=tasks[i].First_Name
+        //    result[i].Last_Name=tasks[i].Last_Name
            
 
-        }
+        // }
         console.log(result)
         
-        res.send(result)
+        res.status(200).send(JSON.stringify(tasks))
 
 
     }catch(e){

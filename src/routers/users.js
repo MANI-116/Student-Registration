@@ -4,8 +4,8 @@ const auth=require('../middleware/auth.js')
 const router=new express.Router()
 
 
-//logout a user
-router.post('/users/logout',auth,async (req,res) =>{
+//logout a user*auth
+router.post('/users/logout',async (req,res) =>{
           
     try {
           req.user.tokens = req.user.tokens.filter((token)=>{
@@ -74,8 +74,8 @@ router.post('/users/login',async (req,res)=>{
     }
 })
 
-//to read users
-router.get('/users', auth,async (req, res) => {
+//to read users,*auth
+router.get('/users', async (req, res) => {
 
     console.log(req.body)
 
