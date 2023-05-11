@@ -47,39 +47,46 @@ console.log(req.body.Roll_No)
 
 //get all tasks
 
-router.get('/tasks',async (req,res)=>{
-    
-    
+// GET /tasks?completed=true
+// GET /tasks?limit=10&skip=20
+// GET /tasks?sortBy=createdAt:desc
 
-    try{
-        console.log("tasks are getting loaded")
-        console.log(req.query)
-        const tasks=await Task.find(req.query)
-        const result=[{Roll_No:String,First_Name:String,Last_Name:String}]
-
+router.get('/tasks', async (req, res) => {
+    try {
+      const match = {};
+      const sort = {};
+  
+      if (req.query.completed) {
+        match.completed = req.query.completed === 'true';
+      }
+  
+      if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':');
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+        if (parts[0] === 'Roll_No') {
+          sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+        }
+      }
+  
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = parseInt(req.query.skip) || 0;
+  
+      const tasks = await Task.find(match)
+        .limit(limit)
+        .skip(skip)
+        .sort(sort);
         console.log(tasks)
+  
+      res.status(200).send(tasks);
+    } catch (e) {
+      res.status(500).send();
+    }
+  });
+  
 
-        // for(let i=0;i<5;i++){
-        //     const object={Roll_No:String,First_Name:String,Last_Name:String}
-        //    result[i].Roll_No=tasks[i].Roll_No
-        //    result[i].First_Name=tasks[i].First_Name
-        //    result[i].Last_Name=tasks[i].Last_Name
-           
-
-        // }
-        console.log(result)
-        
-        res.status(200).send(JSON.stringify(tasks))
-
-
-    }catch(e){
-        res.status(500).send()
-        console.log(e)
-
-    }   
-
-})
 // get a particular task ussing id
+
+
 router.get('/tasks/:id',async(req,res)=>{
     const _id=req.params.id
 
@@ -98,16 +105,18 @@ try{
 //update a task
 
 router.patch('/tasks/:id',async (req,res)=>{
-
+    console.log('update request came pos 1')
+    console.log(req.body.completed)
     const updates=Object.keys(req.body)
-    const allowedUpdates=['description','completed']
+    console.log(updates)
+    const allowedUpdates=['remarks','completed']
 
     const isValid= updates.every((update)=> allowedUpdates.includes(update))
-
+     console.log(isValid)
     if(!isValid){
        return  res.status(404).send({error:'invalid updates'})
     }
-
+    console.log('update request came pos 2')
 
     try{
         const task=await Task.findByIdAndUpdate(req.params.id,req.body,{new:true, runValidators:true})

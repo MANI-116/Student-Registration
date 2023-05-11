@@ -24,6 +24,13 @@ Last_Name:{
     trim:true
 
 },
+remarks:{
+    type:String
+
+},
+completed:{
+    type:Boolean
+},
 dob:{
     
     type:String,
@@ -181,10 +188,7 @@ fcname:[{
         
     trim:true
 
-}],
-completed:{
-    type:Boolean
-}
+}]
 
 
 
