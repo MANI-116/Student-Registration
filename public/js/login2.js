@@ -22,7 +22,7 @@ loginform.addEventListener('submit',(e) =>{
     response.json().then((data)=>{
         if(!data.error){
             console.log(data)//*webcam-studentRegistration
-        window.open('http://localhost:80/libform',"_self")
+        window.open('http://localhost:80/webcam',"_self")
     }
         else
         alert('no user found...singnup!')

@@ -26,11 +26,21 @@ router.post('/users/logout',async (req,res) =>{
 
 //create a user
 router.post('/users', async (req, res) => {
-    console.log("requestcame")
+    console.log(req.body)
 
     try {
-        console.log("request accepted")
-            const user=new User({
+         console.log("request accepted")
+            const user=new User({  
+                First_Name:req.body.First_Name,
+                Last_Name:req.body.Last_Name,
+                dob:req.body.dob,
+                Mobile_Number:req.body.Mobile_Number,
+                Gender:req.body.Gender,
+                Address:req.body.Address,
+                City:req.body.City,
+                Pin_Code:req.body.Pin_Code,
+                State:req.body.State,
+                Country:req.body.Country,
                 email:req.body.email,
                 password:req.body.password,
                 roll:req.body.roll
@@ -38,11 +48,11 @@ router.post('/users', async (req, res) => {
 
             
             await user.save()
-            //console.log("dbms accepted")
+            console.log("dbms accepted")
              const ser =await User.findByCredentials(req.body.email, req.body.password)
-            //console.log(user)
+            console.log(user)
             const token=await ser.generateAuthToken()
-            //       console.log(token);
+                  console.log(token);
             
     
             res.cookie('authorizationToken',token).render('login')
@@ -77,15 +87,28 @@ router.post('/users/login',async (req,res)=>{
 //to read users,*auth
 router.get('/users', async (req, res) => {
 
-    console.log(req.body)
+    console.log('get users request came')
+    console.log(req.query)
+    
+    
 
     try {
-        const users = await User.find({})
-        if (!users) {
-            return res.status(400).send(users)
+        const user = await User.find({roll:parseInt(req.query.Roll_No)})
+        console.log('..............................................................................................')
+       
+        if (!user) {
+            return res.status(400).send(user)
         }
+        
+       // const duffer=user.image.toString('base64')
+       //let  x= user.image.toString()
+       //let  y= Buffer.from(user.campusImage,'base64').toString().replace('data:image/jpeg;base64,','')
+      // console.log(user.image)
 
-        res.send(users)
+       
+
+
+        res.status(200).send(user)
 
 
     } catch (e) {

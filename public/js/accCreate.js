@@ -66,15 +66,17 @@
 
   
 
-// })
+const form = document.getElementById("user-form");
+//const sendOtpButton = document.getElementById("send-otp");
+
+//Handle form submission
+form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    // TODO: Add form validation and submit form data to backend
+});
 
 
-const rollEle=document.getElementById('roll-el')
-    
-const passwordEle=document.getElementById('password-el')
-const confirmPasswordEle=document.getElementById('confirmPassword-el')
-
-   let emailEle = document.getElementById('email-el');
    let verfEle = document.querySelector('.verification');
    let successEle = document.querySelector('.success');
    let errorEle = document.querySelector('.error');
@@ -136,6 +138,16 @@ const confirmPasswordEle=document.getElementById('confirmPassword-el')
                     fetch('http://localhost:80/users', {
                             method: "POST",
                             body: JSON.stringify({
+                                  First_Name:document.getElementById('firstName').value,
+                                  Last_Name:document.getElementById('lastName').value,
+                                  dob:document.getElementById('dob').value,
+                                  Mobile_Number:document.getElementById('mobileNumber').value,
+                                  Gender:document.getElementById('gender').value,
+                                  Address:document.getElementById('address').value,
+                                  City:document.getElementById('city').value,
+                                  Pin_Code:document.getElementById('pinCode').value,
+                                  State:document.getElementById('state').value,
+                                  Country:document.getElementById('country').value,
                                   email:email,
                                   password:password,
                                   roll:roll
@@ -176,6 +188,13 @@ const confirmPasswordEle=document.getElementById('confirmPassword-el')
 
     function sendOTP()
    {
+    const rollEle=document.getElementById('roll-el')
+    
+const passwordEle=document.getElementById('password-el')
+const confirmPasswordEle=document.getElementById('confirmPassword-el')
+
+   let emailEle = document.getElementById('email-el');
+
       email = emailEle.value;
       roll=rollEle.value
       password=passwordEle.value

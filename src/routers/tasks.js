@@ -3,44 +3,115 @@ const express=require('express')
 const Task=require('../models/tasks')
 const auth=require('../middleware/auth.js')
 const router=new express.Router()
+const multer = require('multer');
 
 //create a task
 
+// Set up Multer for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-
-
-
-router.post('/tasks',auth,async (req,res)=>{
+// Route to handle form submission
+router.post('/tasks', auth,upload.array('files'), async (req, res) => {
+  // Extract form data from req.body
+  console.log(req.body)
+  const {
+    Roll_No,
+    branch,
+    sem,
+    degree,
+    year,
+    presem,
+    sgpi,
+    cgpi,
+    bcourses,
+    remarks,
+     completed,
     
-   const user=req.user
-const task=new Task(req.body)
+  } = req.body;
+   // Convert bcourses from a string to an array
+   const parsedBcourses = JSON.parse(bcourses);
 
-console.log(req.body.Roll_No)
-    try{
-        await task.save()
-       res.status(202).render('index')
+   // Process file data and convert to buffers
+   const fileBuffers = req.files.map(file => ({
+     data: file.buffer,
+     contentType: file.mimetype
+   }));
+
+  // Create a new task object
+  const task = new Task({
+    Roll_No,
+    branch,
+    sem,
+    degree,
+    year,
+    presem,
+    sgpi,
+    cgpi,
+    bcourses: parsedBcourses,
+    remarks,
+    completed,
+    files: fileBuffers,
     
-   }catch(e){
-       res.status(400).send('failed!')
-   }
-//    try {
+  });
 
-//     req.user.tokens = req.user.tokens.filter((token)=>{
-//       return token.token !== req.token
-//     })
+  console.log(req.files)
 
-//     await req.user.save()
-//     res.status(202).render('index')
-//    // res.send()
+  // Store uploaded files in the task object
+  // req.files.forEach((file) => {
+  //   task.files.push({
+  //     data: file.buffer,
+  //     contentType: file.mimetype
+  //   });
+  // });
 
-// } catch (error) {
+  // Save the task to the database
+  await task.save()
+    .then(() => {
+      res.status(200).send({ "message": "Task created successfully" });
+    })
+    .catch((error) => {
+      console.error('Error creating task:', error);
+      res.status(500).json({ error: 'Failed to create task' });
+    });
+});
 
-//   res.status(500).send({error})
+
+
+
+
+
+// router.post('/tasks',auth,async (req,res)=>{
+    
+//    const user=req.user
+// const task=new Task(req.body)
+
+// console.log(req.body.Roll_No)
+//     try{
+//         await task.save()
+//        res.status(202).render('index')
+    
+//    }catch(e){
+//        res.status(400).send('failed!')
+//    }
+// //    try {
+
+// //     req.user.tokens = req.user.tokens.filter((token)=>{
+// //       return token.token !== req.token
+// //     })
+
+// //     await req.user.save()
+// //     res.status(202).render('index')
+// //    // res.send()
+
+// // } catch (error) {
+
+// //   res.status(500).send({error})
   
-// }
+// // }
 
 
-})
+// })
 
 //to delete a particularid
 
@@ -52,12 +123,21 @@ console.log(req.body.Roll_No)
 // GET /tasks?sortBy=createdAt:desc
 
 router.get('/tasks', async (req, res) => {
+ 
+
+
     try {
+
+
       const match = {};
       const sort = {};
+      match.sem=parseInt(req.query.sem)
+      match.branch=req.query.branch
+      match.degree=req.query.degree
   
       if (req.query.completed) {
         match.completed = req.query.completed === 'true';
+       
       }
   
       if (req.query.sortBy) {
@@ -72,9 +152,13 @@ router.get('/tasks', async (req, res) => {
       const skip = parseInt(req.query.skip) || 0;
   
       const tasks = await Task.find(match)
+      .select('+Roll_No +branch +sem +degree +year +presem +sgpi +cgpi +files +bcourses +remarks +completed')
         .limit(limit)
         .skip(skip)
         .sort(sort);
+        
+        console.log(match)
+        console.log(req.query)
         console.log(tasks)
   
       res.status(200).send(tasks);

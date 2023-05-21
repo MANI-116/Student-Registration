@@ -8,16 +8,87 @@ const jwt=require('jsonwebtoken')
 
 
 const userSchema=new mongoose.Schema({
-    name:{
-        type:String,
+
+First_Name:{
+    
+    type:String,
         
-        trim:true
-    },
-    image:{
+    trim:true
+
+},
+Last_Name:{
+    
+    type:String,
+        
+    trim:true
+
+},
+dob:{
+    type:String,
+    trim:true
+},
+Mobile_Number:{
+    
+    type:String,
+        
+    trim:true
+
+},
+Gender:{
+    
+    type:String,
+        
+    trim:true
+
+},
+Address:{
+    
+    type:String,
+        
+    trim:true
+
+},
+City:{
+    
+    type:String,
+        
+    trim:true
+
+},
+Pin_Code:{
+    
+    type:String,
+        
+    trim:true
+
+},
+State:{
+    
+    type:String,
+        
+    trim:true
+
+},
+Country:{
+    
+    type:String,
+        
+    trim:true
+
+},
+image:{
         type:Buffer
     },
+campusImage:{
+        type:Buffer
+    },
+presentStatus:{
+    type:Boolean,
+    default:false
+
+} ,   
     
-    email:{
+email:{
         type:String,
         unique:true,
         required:true,
@@ -28,7 +99,7 @@ const userSchema=new mongoose.Schema({
             throw new Error('Email is invalid')
         }
     },
-    password:{
+password:{
         type:String,
         trim:true,
         required:true,
@@ -43,21 +114,21 @@ const userSchema=new mongoose.Schema({
         }
 
     },
-    role:{
+role:{
         type:String,
         
         trim:true,
         lowerCase:true,
         
     },
-    roll:{
+roll:{
         type:String,
         required:true,
         trim:true,
         unique:true
 
     },
-    token: [{
+token: [{
         token: {
             type:String,
             required:true

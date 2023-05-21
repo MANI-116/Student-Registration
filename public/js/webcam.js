@@ -39,18 +39,20 @@ console.log(token)
             }).then((response) => {
                 response.json().then((response)=> 
                 {
-                    console.log(JSON.stringify(response));
+                    //console.log(JSON.stringify(response));
                     let object=JSON.parse(JSON.stringify(response))
                     let da =object.da
                     
-                    console.log(da);
+                    //console.log(da);
                     
-                    window.open('http://localhost:80/'+da,"_self");
+                   // window.open('http://localhost:80/'+da,"_self");
+                   window.alert('your prescence in institute is confirmed')
+                   window.open('http://localhost:80',"_self")
                 })
 
 
                 }).catch((e) => {
-                console.log("wrong data");
+                    window.alert('your image is not matched')
                 
             });
 

@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 const validator=require('validator')
 
-const teachersSchema=new mongoose.Schema({
+const facultySchema=new mongoose.Schema({
     name:{
         type:String,
         
@@ -63,6 +63,6 @@ const teachersSchema=new mongoose.Schema({
     }
 })
 
-const Faculty=new mongoose.model("Faculty",facultySchema)
+const Faculty=new mongoose.model("Faculty",facultySchema);
 
-module.exports=Faculty
+module.exports=Faculty;
