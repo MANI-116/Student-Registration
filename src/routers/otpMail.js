@@ -20,7 +20,7 @@ var transporter = nm.createTransport(
         secure: false,
         auth: {
             user: '111manikanta.v@gmail.com',
-            pass: 'gmsgvybcmlujkkim'
+           // pass: ''
         },
         tls: {
             rejectUnauthorized: false,
